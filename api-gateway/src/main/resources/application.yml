@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 9090
 spring:
   application:
     name: api-gateway
@@ -11,22 +11,22 @@ spring:
         uri: lb://INVENTORY-SERVICE
         predicates:
           - Path=/api/inventory/**
-        filters:
-          - AuthenticationFilter
+#        filters:
+#          - AuthenticationFilter
 
       - id: product-service
         uri: lb://PRODUCT-SERVICE
         predicates:
           - Path=/api/product/**
-        filters:
-          - AuthenticationFilter
+#        filters:
+#          - AuthenticationFilter
 
       - id: order-service
         uri: lb://ORDER-SERVICE
         predicates:
           - Path=/api/order/**
-        filters:
-          - AuthenticationFilter
+#        filters:
+#          - AuthenticationFilter
 
       - id: notification-service
         uri: lb://NOTIFICATION-SERVICE

@@ -4,6 +4,7 @@ import com.example.orderservice.integration_dto.Product;
 import com.example.orderservice.integration_services.ProductClient;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,17 +18,20 @@ import java.util.List;
 @RequestMapping("api/order/")
 public class MainController {
 
-    public static final String ORDER_SERVICE = "orderService";
+    private static final String SERVICE_NAME = "product-service";
 
     private final ProductClient productClient;
 
     @GetMapping("/list")
-    @Retry(name = ORDER_SERVICE,fallbackMethod = "retryMethod")
+    @CircuitBreaker(name = "SERVICE_NAME", fallbackMethod = "fallbackMethod")
+//    @TimeLimiter(name = "product")
+//    @Retry(name = "product")
     public List<Product> getList(){
         return productClient.getProducts();
     }
 
-    public List<Product> retryMethod(){
+    public List<Product> fallbackMethod(Exception e){
+        System.out.println("Circuit is fallback");
         return new ArrayList<>();
     }
 
